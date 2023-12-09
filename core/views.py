@@ -4,19 +4,8 @@ from playsound import playsound
 import random
 from django.contrib.auth import login as dlogin, logout as dlogout, authenticate
 from django.contrib.auth.models import User
+from django.contrib import messages
 
-
-def login_page(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(username=username, password = password)
-        if user is not None:
-            dlogin(request, user)
-            return redirect("welcome-page")
-        messages.error(request, "Invalid Login Details")
-        return redirect("login-page")
-    return render(request, "login.html", {})
 
 def register_page(request):
     if request.method == "POST":
@@ -25,10 +14,23 @@ def register_page(request):
         password = request.POST.get("password")
         user = User.objects.create_user(username = username, password = password, first_name = fullname)
         user.save()
-        return redirect("login-page")
+        return redirect("/login")
     context = {}
     return render(request, "register.html", context)
     
+
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(username=username, password = password)
+        if user is not None:
+            dlogin(request, user)
+            return redirect("/")
+        messages.error(request, "Invalid Login Details")
+        return redirect("/login")
+    return render(request, "login.html", {})
+
 
 def logout_page(request):
     dlogout(request)
@@ -36,18 +38,18 @@ def logout_page(request):
 
 
 def text_to_speech(speech_text):
-        file = open('dd.txt','w')
-        file.writelines(f'Hi, an email just came in, it reads: {speech_text} \n')
-        file.close()
-        file = open('dd.txt','r')
-        data= file.read()
-        file.close()
-        language = 'en'
-        myobj = gtts.gTTS(text=data, lang=language, slow=False) 
-        i=random.randint(1, 100)
-        file='new'+str(i)+'.mp3'
-        myobj.save(file)      
-        playsound(file)
+    file = open('dd.txt','w')
+    file.writelines(f'Hi, an email just came in, it reads: {speech_text} \n')
+    file.close()
+    file = open('dd.txt','r')
+    data= file.read()
+    file.close()
+    language = 'en'
+    myobj = gtts.gTTS(text=data, lang=language, slow=False) 
+    i=random.randint(1, 100)
+    file='new'+str(i)+'.mp3'
+    myobj.save(file)      
+    playsound(file)
 
 
 def index(request):

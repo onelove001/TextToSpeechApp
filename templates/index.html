@@ -1,29 +1,39 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if request.user.is_authenticated %}
     <div class="card text-center">
         <div class="card-header">
-            <h1 class="text-primary">Welcome Back!</h1>
+            <h1 class="text-primary">Welcome Back Mr/Mrs {{request.user.first_name}}</h1>
         </div>
         <div class="card-body">
             <form action="" method="POST"> {% csrf_token %}
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">&&</span>
-                    <input type="text" class="form-control" placeholder="Fullname" aria-label="Fullname"  aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" placeholder="Fullname" aria-label="Fullname"  aria-describedby="basic-addon1" value="FullName: {{request.user.first_name}}" disabled>
                 </div>
 
                 <div class="input-group mb-3">
                     <span class="input-group-text">@</span>
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username">
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" value="Username: {{request.user.username}}" disabled>
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-text">Text</span>
-                    <textarea class="form-control" aria-label="Text" name="speech_text"></textarea>
+                    <textarea class="form-control" aria-label="Text" placeholder="Please Enter Your Text..." name="speech_text"></textarea>
                 </div>
                 <br><br>
                 <button class="btn btn-primary btn-lg" type="submit">Convert To Speech</button>
             </form>
         </div>
     </div>
+{% else %}
+    <div class="card">
+        <div class="card-body mt-5">
+            <div class="card-header">
+                <h2 class="text-danger">Ooops!!! you have to Register and Login to view this page</h2>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock content %}
